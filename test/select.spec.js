@@ -1578,20 +1578,6 @@ describe('ui-select tests', function() {
       expect($(el).attr('tabindex')).toEqual(undefined);
     });
 
-    it('should update size of search input after removing an item', function() {
-        scope.selection.selectedMultiple = [scope.people[4], scope.people[5]]; //Wladimir & Samantha
-        var el = createUiSelectMultiple();
-
-        spyOn(el.scope().$select, 'sizeSearchInput');
-
-        var searchInput = el.find('.ui-select-search');
-        var oldWidth = searchInput.css('width');
-
-        el.find('.ui-select-match-item').first().find('.ui-select-match-close').click();
-        expect(el.scope().$select.sizeSearchInput).toHaveBeenCalled();
-
-    });
-
     it('should move to last match when pressing BACKSPACE key from search', function() {
 
         var el = createUiSelectMultiple();

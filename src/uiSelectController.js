@@ -101,6 +101,16 @@ uis.controller('uiSelectCtrl',
     }
   };
 
+  ctrl.maybeActivate = function(e) {
+    if (e.currentTarget === e.target) {
+      // Clicking on topmost element causes emptying choices repeater under
+      // some circumstances. Deferring is a workaround.
+      $timeout(function() {
+        ctrl.activate.apply(this, Array.prototype.slice.call(arguments, 1));
+      });
+    }
+  };
+
   ctrl.findGroupByName = function(name) {
     return ctrl.groups && ctrl.groups.filter(function(group) {
       return group.name === name;
@@ -379,36 +389,56 @@ uis.controller('uiSelectCtrl',
   };
 
   var sizeWatch = null;
-  ctrl.sizeSearchInput = function() {
-
-    var input = ctrl.searchInput[0],
+    ctrl.sizeSearchInput = function() {
+      var
+        input = ctrl.searchInput[0],
         container = ctrl.searchInput.parent().parent()[0],
+
+        calculateContainerPadding = function(leftOnly) {
+          var padding = 0;
+          var computedStyle;
+
+          if (window.getComputedStyle && (computedStyle = window.getComputedStyle(container))) {
+            var attrs = {'padding-left': true, 'padding-right': !leftOnly};
+            for (var attr in attrs) {
+              if (attrs.hasOwnProperty(attr) && attrs[attr]) {
+                padding += parseInt(computedStyle[attr]) || 0;
+              }
+            }
+          }
+
+          return padding;
+        },
+
         calculateContainerWidth = function() {
           // Return the container width only if the search input is visible
-          return container.clientWidth * !!input.offsetParent;
+          if (!input.offsetParent) {
+            return 0;
+          }
+
+          return container.clientWidth - calculateContainerPadding();
         },
+
         updateIfVisible = function(containerWidth) {
           if (containerWidth === 0) {
             return false;
           }
-          var inputWidth = containerWidth - input.offsetLeft - 10;
-          if (inputWidth < 50) inputWidth = containerWidth;
+          var inputWidth = containerWidth - input.offsetLeft + calculateContainerPadding(true);
           ctrl.searchInput.css('width', inputWidth+'px');
           return true;
         };
 
-    ctrl.searchInput.css('width', '10px');
-    $timeout(function() { //Give tags time to render correctly
-      if (sizeWatch === null && !updateIfVisible(calculateContainerWidth())) {
-        sizeWatch = $scope.$watch(calculateContainerWidth, function(containerWidth) {
-          if (updateIfVisible(containerWidth)) {
-            sizeWatch();
-            sizeWatch = null;
-          }
-        });
-      }
-    });
-  };
+      $timeout(function() { //Give tags time to render correctly
+        if (sizeWatch === null && !updateIfVisible(calculateContainerWidth())) {
+          sizeWatch = $scope.$watch(calculateContainerWidth, function(containerWidth) {
+            if (updateIfVisible(containerWidth)) {
+              sizeWatch();
+              sizeWatch = null;
+            }
+          });
+        }
+      });
+    };
 
   function _handleDropDownSelection(key) {
     var processed = true;

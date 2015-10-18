@@ -24,7 +24,6 @@ uis.directive('uiSelectMultiple', ['uiSelectMinErr','$timeout', function(uiSelec
         //e.g. When user clicks on a selection, the selected array changes and 
         //the dropdown should remove that item
         $select.refreshItems();
-        $select.sizeSearchInput();
       };
 
       // Remove item from multiple select
@@ -40,7 +39,6 @@ uis.directive('uiSelectMultiple', ['uiSelectMinErr','$timeout', function(uiSelec
 
         $select.selected.splice(index, 1);
         ctrl.activeMatchIndex = -1;
-        $select.sizeSearchInput();
 
         // Give some time for scope propagation.
         $timeout(function(){
@@ -164,11 +162,11 @@ uis.directive('uiSelectMultiple', ['uiSelectMinErr','$timeout', function(uiSelec
 
       scope.$on('uis:activate', function () {
         $selectMultiple.activeMatchIndex = -1;
+        $select.sizeSearchInput();
       });
 
-      scope.$watch('$select.disabled', function(newValue, oldValue) {
-        // As the search input field may now become visible, it may be necessary to recompute its size
-        if (oldValue && !newValue) $select.sizeSearchInput();
+      scope.$on('uis:close', function() {
+        $select.searchInput.css('width', '');
       });
 
       $select.searchInput.on('keydown', function(e) {
@@ -187,6 +185,7 @@ uis.directive('uiSelectMultiple', ['uiSelectMinErr','$timeout', function(uiSelec
           }
         });
       });
+
       function _getCaretPosition(el) {
         if(angular.isNumber(el.selectionStart)) return el.selectionStart;
         // selectionStart is not supported in IE8 and we don't want hacky workarounds so we compromise
