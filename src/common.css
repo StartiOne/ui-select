@@ -13,8 +13,8 @@
   overflow: hidden !important;
   position: absolute !important;
   outline: 0 !important;
-  left: 0px !important;
-  top: 0px !important;
+  left: 0 !important;
+  top: 0 !important;
 }
 
 
@@ -43,6 +43,10 @@
 
 body > .select2-container.open {
   z-index: 9999; /* The z-index Select2 applies to the select2-drop */
+}
+
+.select2-container-multi.empty .select2-search-field {
+  float: none;
 }
 
 /* Handle up direction Select2 */
@@ -163,6 +167,19 @@ body > .select2-container.open {
 
 body > .ui-select-bootstrap.open {
   z-index: 1000; /* Standard Bootstrap dropdown z-index */
+}
+
+.ui-select-multiple {
+  cursor: text;
+}
+
+.ui-select-multiple .ui-select-search {
+  width: 50px;
+  min-width: 50px;
+}
+
+.ui-select-multiple.empty .ui-select-search {
+  width: 100%;
 }
 
 .ui-select-multiple.ui-select-bootstrap {

@@ -1,5 +1,7 @@
-<div class="ui-select-container ui-select-multiple ui-select-bootstrap dropdown form-control" ng-class="{open: $select.open}">
-  <div>
+<div class="ui-select-container ui-select-multiple ui-select-bootstrap dropdown form-control"
+     ng-class="{open: $select.open, empty: !$select.selected.length}"
+     ng-click="$select.maybeActivate($event)">
+  <div ng-click="$select.maybeActivate($event)">
     <div class="ui-select-match"></div>
     <input type="text"
            autocomplete="false" 

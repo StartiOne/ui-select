@@ -1,7 +1,9 @@
 <div class="ui-select-container ui-select-multiple select2 select2-container select2-container-multi"
      ng-class="{'select2-container-active select2-dropdown-open open': $select.open,
-                'select2-container-disabled': $select.disabled}">
-  <ul class="select2-choices">
+                'select2-container-disabled': $select.disabled,
+                'empty': !$select.selected.length}"
+     ng-click="$select.maybeActivate($event)">
+  <ul class="select2-choices" ng-click="$select.maybeActivate($event)">
     <span class="ui-select-match"></span>
     <li class="select2-search-field">
       <input
@@ -21,7 +23,6 @@
         ng-hide="$select.disabled"
         ng-model="$select.search"
         ng-click="$select.activate()"
-        style="width: 34px;"
         ondrop="return false;">
     </li>
   </ul>
